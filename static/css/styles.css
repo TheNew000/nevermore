@@ -1,0 +1,28 @@
+/* line 1, ../../compass/sass/styles.scss */
+.modal-dialog.modal-sm {
+  max-width: 350px;
+}
+
+/* line 5, ../../compass/sass/styles.scss */
+.navbar-brand {
+  overflow: hidden;
+}
+/* line 7, ../../compass/sass/styles.scss */
+.navbar-brand img {
+  max-height: 60px;
+  margin-top: -15px;
+}
+
+/* line 13, ../../compass/sass/styles.scss */
+header.header {
+  background: url("/static/images/background.jpg") no-repeat 0px -200px;
+  background-size: cover;
+  width: 100%;
+  height: 350px;
+  margin-top: 50px;
+}
+/* line 19, ../../compass/sass/styles.scss */
+header.header h1 {
+  padding: 125px 0px 0px 100px;
+  font-family: 'PT Serif', Serif;
+}
