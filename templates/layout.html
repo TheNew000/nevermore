@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <title>Nevermore!</title>
 
-<!--     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
     <link href="https://fonts.googleapis.com/css?family=PT+Serif" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://bootswatch.com/cyborg/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/styles.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/static/js/cookies.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
-            
+    <script src="/static/js/nevermore.js"></script>
+
 </head>
 <body>
     <!-- Modal -->
@@ -28,15 +31,15 @@
             <h4 class="modal-title" id="myModalLabel">Log In</h4>
           </div>
           <div class="modal-body">
-            <form class="form-horizontal" method="post" action="/login">
-              <div class="form-group">
-                <label for="inputEmail3" class="control-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-              </div>
-              <div class="form-group">
-                <label for="inputPassword3" class="control-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-              </div>
+            <form class="form-horizontal" method="post" id="login-form">
+                <div class="form-group">
+                    <label for="userName" class="control-label">User Name</label>
+                    <input type="text" class="form-control" id="userName-login" name="userName" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="control-label">Password</label>
+                    <input type="password" class="form-control" id="password-login" name="password" placeholder="Password">
+                </div>
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <div class="checkbox">
@@ -47,7 +50,7 @@
                 </div>
               </div>
               <div class="form-group">
-                  <button type="submit" class="btn btn-block btn-primary">Sign in</button>
+                  <button type="submit" class="btn btn-block btn-primary" >Sign in</button>
               </div>
             </form>
           </div>
@@ -66,31 +69,26 @@
             <h4 class="modal-title" id="myModalLabel">Log In</h4>
           </div>
           <div class="modal-body">
-            <form class="form-horizontal" method="post" action="/register">
+            <form class="form-horizontal" method="post" id="reg-form">
               <div class="form-group">
                 <label for="fullName" class="control-label">Full Name</label>
-                <input type="text" class="form-control" id="fullName" placeholder="Email">
+                <input type="text" class="form-control" id="fullName-reg" name="fullName" placeholder="Full Name">
+              </div>
+              <div class="form-group">
+                <label for="userName" class="control-label">User Name</label>
+                <input type="text" class="form-control" id="userName-reg" name="userName" placeholder="User Name">
               </div>
               <div class="form-group">
                 <label for="email" class="control-label">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Email">
+                <input type="email" class="form-control" name="email" id="email-reg" placeholder="Email">
               </div>
               <div class="form-group">
-                <label for="inputPassword3" class="control-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                <label for="password" class="control-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password-reg" placeholder="Password">
               </div>
               <div class="form-group">
                 <label for="pwConfirm" class="control-label">Confirm Password</label>
-                <input type="password" class="form-control" id="pwConfirm" placeholder="Confirm Password">
-              </div>
-              <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox"> Remember me
-                    </label>
-                  </div>
-                </div>
+                <input type="password" class="form-control" name="pwConfirm" id="pwConfirm-reg" placeholder="Confirm Password">
               </div>
               <div class="form-group">
                   <button type="submit" class="btn btn-block btn-primary">Sign in</button>
@@ -117,11 +115,17 @@
           <a class="navbar-brand" href="#">Nevermore</a>
         </div>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
+            <li class="dropdown" id="user-nav">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello, <span id="userbar"></span><span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#" data-toggle="modal" data-target="#loginModal">Log Out</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#regModal">Settings</a></li>
+              </ul>
+            </li>
+            <li class="dropdown" id="action-nav">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Log In/Register <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#loginModal">Log In</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#regModal">Register</a></li>
               </ul>
             </li>
@@ -133,6 +137,19 @@
         <h1>Quoth the Raven...</h1>
     </header>
 
+    <form id="submit-post" action="post_submit" class="form-horizontal col-sm-7 col-sm-offset-4" method="POST">
+        <div class="form-group">
+            <div class="col-sm-10">
+                <label class="control-label">What's Your Favorite EAP Quote?</label>
+                <textarea name="post_content" cols="60" rows="8"></textarea>
+                <input id="hidID" name="hidID" type="hidden">
+            </div>
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-danger col-sm-9">Submit</button>
+            </div>
+        </div>
+    </form>
+    
 {% block body %} {% endblock %}
 
 </body>

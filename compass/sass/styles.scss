@@ -21,3 +21,13 @@ header.header{
         font-family: 'PT Serif', Serif;
     }
 }
+
+.btn-danger{
+    color: black;
+    background-color: #69f0ae;
+    border-color: #69f0ae;
+    &:hover{
+        background-color: #5db78a;
+        border-color: #5db78a;
+    }
+}

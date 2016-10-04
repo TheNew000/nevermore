@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block body %} 
+
+    <table id="tweet-content" class="table table-hover table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Quote</th>
+                <th>User</th>
+                <th>Votes</th>
+                <th>Upvote</th>
+                <th>Downvote</th>
+            </tr>
+        </thead>
+        {% for row in tweet_content %}
+            <tr>
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td class="vote{{row[0]}}">{{row[3]}}</td>
+                {%  %}
+                <td style="text-align: center"><a class="upvote" id="{{row[0]}}" href=""><i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i></a></td>
+                <td style="text-align: center"><a class="downvote" id="{{row[0]}}" href=""><i class="fa fa-thumbs-o-down fa-2x" aria-hidden="true"></i></a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

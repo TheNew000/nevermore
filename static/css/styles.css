@@ -26,3 +26,15 @@ header.header h1 {
   padding: 125px 0px 0px 100px;
   font-family: 'PT Serif', Serif;
 }
+
+/* line 25, ../../compass/sass/styles.scss */
+.btn-danger {
+  color: black;
+  background-color: #69f0ae;
+  border-color: #69f0ae;
+}
+/* line 29, ../../compass/sass/styles.scss */
+.btn-danger:hover {
+  background-color: #5db78a;
+  border-color: #5db78a;
+}
