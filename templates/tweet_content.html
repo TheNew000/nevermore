@@ -16,9 +16,8 @@
                 <td>{{row[1]}}</td>
                 <td>{{row[2]}}</td>
                 <td class="vote{{row[0]}}">{{row[3]}}</td>
-                {%  %}
-                <td style="text-align: center"><a class="upvote" id="{{row[0]}}" href=""><i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i></a></td>
-                <td style="text-align: center"><a class="downvote" id="{{row[0]}}" href=""><i class="fa fa-thumbs-o-down fa-2x" aria-hidden="true"></i></a></td>
+                <td style="text-align: center"><a class="upvote" id="{{row[0]}}" href=""><i id="thumbUp{{row[0]}}" class="fa fa-thumbs-o-up fa-2x {% if row[4]== 'UP' %} green {% else %}{% endif %}" aria-hidden="true"></i></a></td>
+                <td style="text-align: center"><a class="downvote" id="{{row[0]}}" href=""><i id="thumbDown{{row[0]}}" class="fa fa-thumbs-o-down fa-2x {% if row[4]== 'DOWN' %} red {% else %}{% endif %}" aria-hidden="true"></i></a></td>
             </tr>
         {% endfor %}
     </table>

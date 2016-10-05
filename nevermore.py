@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, jsonify
+from flask import Flask, render_template, redirect, request, jsonify, session
 from flaskext.mysql import MySQL
 import bcrypt
 
@@ -13,6 +13,8 @@ mysql.init_app(app)
 
 conn = mysql.connect()
 cursor = conn.cursor()
+
+app.secret_key = 'dasu23iga@#$kga3168hguk23t(^)3190'
 
 @app.route('/')
 def index():
@@ -88,7 +90,6 @@ def get_user():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect('/')
 
 @app.route('/post_submit', methods=['POST'])
 def post_submit():

@@ -38,3 +38,13 @@ header.header h1 {
   background-color: #5db78a;
   border-color: #5db78a;
 }
+
+/* line 35, ../../compass/sass/styles.scss */
+.green {
+  color: green;
+}
+
+/* line 39, ../../compass/sass/styles.scss */
+.red {
+  color: red;
+}

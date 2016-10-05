@@ -50,7 +50,6 @@ $(document).ready(function(){
     });
 
     $('.upvote').click(function(e){
-        e.preventDefault();
         var value = $(this).attr('id');
         $.post('/upvote', {
             comment_id: value,
@@ -58,11 +57,14 @@ $(document).ready(function(){
         }).done(function(data){
             if(data.status === 200){
                 $('.vote' + value).html(data.vote_count);
+                $('#thumbUp' + value).addClass('green');
+                $('#thumbDown' + value).removeClass('red');
                 update();
             }else{
                 alert(data.message);
             }
         });
+        e.preventDefault();
     });
 
     $('.downvote').click(function(e){
@@ -74,6 +76,8 @@ $(document).ready(function(){
         }).done(function(data){
             if(data.status === 200){
                 $('.vote' + value).html(data.vote_count);
+                $('#thumbUp' + value).removeClass('green');
+                $('#thumbDown' + value).addClass('red');
                 update();
             }else{
                 alert(data.message);
