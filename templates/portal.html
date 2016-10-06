@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+{% block body %} 
+<!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-vertical" method="post" id="edit-form">
+                            <label for="quote" class="control-label">Quote</label>
+                        <div class="form-group">
+                            <textarea name="quote_content" id="quote-content" rows="8" cols="34" data-minlength="20" data-error="Your Quote is Simply...Terribly Short!" required></textarea>
+                            <div class="help-block with-errors"></div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-block btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End Modal -->
+    <form class="form-vertical col-sm-6 col-sm-offset-3" data-toggle="validator" role="form" method="post" id="edit-form">
+        <h4>Edit Info</h4>
+        <h6 id='message'></h6>
+        <input id="hidID" name="hidID" type="hidden">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="fullName" class="control-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullName-edit" name="fullName" value="{{user_info[4]}}" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="userName" class="control-label">User Name</label>
+                    <input type="text" class="form-control" id="userName-edit" name="userName" value="{{user_info[2]}}" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="email" class="control-label">Email</label>
+                    <input type="email" class="form-control" data-error="This email appears to be invalid" name="email" id="email-edit" value="{{user_info[1]}}" required>
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="oldPW" class="control-label">Please Enter Current Password</label>
+                    <input type="password" data-error="Passwords are required for any changes" class="form-control" name="oldPW" id="oldPW-edit" placeholder="Current Password" required>
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="password" class="control-label">Change Password?</label>
+                    <input type="password" class="form-control" name="password" id="password-edit" placeholder="New Password">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pwConfirm" class="control-label">Confirm New Password</label>
+                    <input type="password" class="form-control" data-match="#password-edit" data-match-error="Uh oh, these don't match" name="pwConfirm" id="pwConfirm-edit" placeholder="Confirm Password">
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+            <button type="submit" class="btn btn-block btn-danger">Edit</button>
+            </div>
+        </div>
+    </form>
+
+    <table id="user-content" class="table table-hover table-striped table-bordered">
+        <caption><h3>Your Quotes Organized by Highest Rated</h3><h4 class="faa-pulse animated">Fave Total: {{fave_total[0]}} -- Upvotes: {{fave_total[2]}} -- Downvotes: {{fave_total[1]}}!!</h4></caption>
+        <thead>
+            <tr>
+                <th>Quote</th>
+                <th>Upvotes</th>
+                <th>Downvotes</th>
+                <th>Fave's</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        {% for row in user_content %}
+            <tr>
+                <td>{{row[1]}}</td>
+                <td style="text-align: center">{{row[2]}}</td>
+                <td style="text-align: center">{{row[3]}}</td>
+                <td style="text-align: center">{{row[4]}}</td>
+                <td style="text-align: center"><a href="" data-toggle="modal" data-target="#editModal" data-id="{{row[0]}}" data-quote="{{row[1]}}"><i class="edit fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a></td>
+                <td style="text-align: center"><a href="/delete/{{row[0]}}"><i class="red fa fa-trash fa-2x" aria-hidden="true"></i></a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

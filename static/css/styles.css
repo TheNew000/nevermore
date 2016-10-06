@@ -1,19 +1,38 @@
 /* line 1, ../../compass/sass/styles.scss */
+body {
+  text-align: center;
+}
+/* line 3, ../../compass/sass/styles.scss */
+body > * {
+  text-align: left;
+}
+
+/* line 6, ../../compass/sass/styles.scss */
 .modal-dialog.modal-sm {
   max-width: 350px;
 }
 
-/* line 5, ../../compass/sass/styles.scss */
+/* line 10, ../../compass/sass/styles.scss */
 .navbar-brand {
   overflow: hidden;
 }
-/* line 7, ../../compass/sass/styles.scss */
+/* line 12, ../../compass/sass/styles.scss */
 .navbar-brand img {
   max-height: 60px;
   margin-top: -15px;
 }
 
-/* line 13, ../../compass/sass/styles.scss */
+/* line 18, ../../compass/sass/styles.scss */
+.user-nav {
+  text-align: center;
+}
+
+/* line 22, ../../compass/sass/styles.scss */
+#tweet-content {
+  margin-top: 20px;
+}
+
+/* line 26, ../../compass/sass/styles.scss */
 header.header {
   background: url("/static/images/background.jpg") no-repeat 0px -200px;
   background-size: cover;
@@ -21,30 +40,162 @@ header.header {
   height: 350px;
   margin-top: 50px;
 }
-/* line 19, ../../compass/sass/styles.scss */
+/* line 32, ../../compass/sass/styles.scss */
 header.header h1 {
+  text-align: left;
   padding: 125px 0px 0px 100px;
   font-family: 'PT Serif', Serif;
 }
 
-/* line 25, ../../compass/sass/styles.scss */
+/* line 39, ../../compass/sass/styles.scss */
+#post-content, #quote-content {
+  border-radius: 7px;
+}
+
+/* line 43, ../../compass/sass/styles.scss */
+.form-horizontal {
+  display: inline-block;
+}
+/* line 45, ../../compass/sass/styles.scss */
+.form-horizontal .form-group {
+  margin: 0;
+}
+
+/* line 50, ../../compass/sass/styles.scss */
+.btn-block {
+  margin-top: 13px;
+}
+
+/* line 54, ../../compass/sass/styles.scss */
 .btn-danger {
   color: black;
   background-color: #69f0ae;
   border-color: #69f0ae;
 }
-/* line 29, ../../compass/sass/styles.scss */
+/* line 58, ../../compass/sass/styles.scss */
 .btn-danger:hover {
   background-color: #5db78a;
   border-color: #5db78a;
 }
-
-/* line 35, ../../compass/sass/styles.scss */
-.green {
-  color: green;
+/* line 62, ../../compass/sass/styles.scss */
+.btn-danger:active {
+  background-color: #5db78a;
+  border-color: #5db78a;
+}
+/* line 66, ../../compass/sass/styles.scss */
+.btn-danger:focus {
+  background-color: #5db78a;
+  border-color: #5db78a;
+}
+/* line 70, ../../compass/sass/styles.scss */
+.btn-danger:active:focus {
+  background-color: #5db78a;
+  border-color: #5db78a;
+}
+/* line 75, ../../compass/sass/styles.scss */
+.btn-danger.disabled:focus {
+  background-color: #5db78a;
+  border-color: #5db78a;
+}
+/* line 79, ../../compass/sass/styles.scss */
+.btn-danger.disabled:hover {
+  background-color: #5db78a;
+  border-color: #5db78a;
 }
 
-/* line 39, ../../compass/sass/styles.scss */
+/* line 86, ../../compass/sass/styles.scss */
+h1, h2, h3, h4, h5, h6 {
+  color: #fe3955;
+  font-family: 'PT Serif', Serif;
+}
+
+/* line 91, ../../compass/sass/styles.scss */
+h1, h2, h3, h4, h5, h6 {
+  text-align: center;
+}
+
+/* line 95, ../../compass/sass/styles.scss */
+.edit {
+  color: #f16301;
+}
+
+/* line 99, ../../compass/sass/styles.scss */
+.green {
+  color: #5db78a;
+}
+
+/* line 103, ../../compass/sass/styles.scss */
 .red {
-  color: red;
+  color: #fe3955;
+}
+
+/* line 107, ../../compass/sass/styles.scss */
+.white {
+  color: white;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+  50% {
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+  }
+  100% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+}
+@keyframes pulse {
+  0% {
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+  50% {
+    -webkit-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    transform: scale(0.8);
+  }
+  100% {
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+}
+/* line 148, ../../compass/sass/styles.scss */
+.faa-pulse.animated,
+.faa-pulse.animated-hover:hover,
+.faa-parent.animated-hover:hover > .faa-pulse {
+  -webkit-animation: pulse 2s linear infinite, colorPulse 3s ease infinite alternate;
+  animation: pulse 2s linear infinite, colorPulse 3s ease infinite alternate;
+}
+
+@keyframes colorPulse {
+  0%, 100% {
+    -webkit-webkit-color: #fe3955;
+    -moz-webkit-color: #fe3955;
+    -ms-webkit-color: #fe3955;
+    -o-webkit-color: #fe3955;
+    -webkit-color: #fe3955;
+    color: #fe3955;
+  }
+  33% {
+    -webkit-webkit-color: yellow;
+    -moz-webkit-color: yellow;
+    -ms-webkit-color: yellow;
+    -o-webkit-color: yellow;
+    -webkit-color: yellow;
+    color: yellow;
+  }
+  66% {
+    -webkit-webkit-color: #f16301;
+    -moz-webkit-color: #f16301;
+    -ms-webkit-color: #f16301;
+    -o-webkit-color: #f16301;
+    -webkit-color: #f16301;
+    color: #f16301;
+  }
 }

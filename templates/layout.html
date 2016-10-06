@@ -15,14 +15,15 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="/static/js/cookies.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script> -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.js"></script>
+
     <script src="/static/js/nevermore.js"></script>
 
 </head>
 <body>
-    <!-- Modal -->
+    <!-- Log In Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
@@ -31,7 +32,7 @@
             <h4 class="modal-title" id="myModalLabel">Log In</h4>
           </div>
           <div class="modal-body">
-            <form class="form-horizontal" method="post" id="login-form">
+            <form class="form-vertical" method="post" id="login-form">
                 <div class="form-group">
                     <label for="userName" class="control-label">User Name</label>
                     <input type="text" class="form-control" id="userName-login" name="userName" placeholder="User Name">
@@ -59,17 +60,17 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> <!-- End Modal -->
     <!-- Register Modal -->
     <div class="modal fade" id="regModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Log In</h4>
+            <h4 class="modal-title" id="myModalLabel">Register</h4>
           </div>
           <div class="modal-body">
-            <form class="form-horizontal" method="post" id="reg-form">
+            <form class="form-vertical" method="post" id="reg-form">
               <div class="form-group">
                 <label for="fullName" class="control-label">Full Name</label>
                 <input type="text" class="form-control" id="fullName-reg" name="fullName" placeholder="Full Name">
@@ -80,7 +81,7 @@
               </div>
               <div class="form-group">
                 <label for="email" class="control-label">Email</label>
-                <input type="email" class="form-control" name="email" id="email-reg" placeholder="Email">
+                <input type="email" class="form-control" name="email" data-error="This email appears to be invalid" id="email-reg" placeholder="Email">
               </div>
               <div class="form-group">
                 <label for="password" class="control-label">Password</label>
@@ -88,7 +89,7 @@
               </div>
               <div class="form-group">
                 <label for="pwConfirm" class="control-label">Confirm Password</label>
-                <input type="password" class="form-control" name="pwConfirm" id="pwConfirm-reg" placeholder="Confirm Password">
+                <input type="password" class="form-control" data-match="#password-reg" data-match-error="Uh oh, these don't match" name="pwConfirm" id="pwConfirm-reg" placeholder="Confirm Password" required>
               </div>
               <div class="form-group">
                   <button type="submit" class="btn btn-block btn-primary">Sign in</button>
@@ -111,18 +112,19 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><img src="/static/images/raven2.png" class="raven"></a>
-          <a class="navbar-brand" href="#">Nevermore</a>
+          <a class="navbar-brand" href="/"><img src="/static/images/raven2.png" class="raven"></a>
+          <a class="navbar-brand" href="/">Nevermore</a>
         </div>
           <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown" id="user-nav">
+            <li class="dropdown user-nav">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello, <span id="userbar"></span><span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="/logout" data-toggle="modal" data-target="#loginModal">Log Out</a></li>
-                <li><a href="#" data-toggle="modal" data-target="#regModal">Settings</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/portal" id="portal">User Portal</a></li>
+                <li><a href="/logout" id="logout">Log Out</a></li>
               </ul>
             </li>
-            <li class="dropdown" id="action-nav">
+            <li class="dropdown action-nav">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Log In/Register <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="#" data-toggle="modal" data-target="#loginModal">Log In</a></li>
@@ -136,19 +138,9 @@
     <header class="header">
         <h1>Quoth the Raven...</h1>
     </header>
-
-    <form id="submit-post" action="post_submit" class="form-horizontal col-sm-7 col-sm-offset-4" method="POST">
-        <div class="form-group">
-            <div class="col-sm-10">
-                <label class="control-label">What's Your Favorite EAP Quote?</label>
-                <textarea name="post_content" cols="60" rows="8"></textarea>
-                <input id="hidID" name="hidID" type="hidden">
-            </div>
-            <div class="col-sm-10">
-                <button type="submit" class="btn btn-danger col-sm-9">Submit</button>
-            </div>
-        </div>
-    </form>
+    <section class="action-nav">
+        <h3 class="col-sm-7 col-sm-offset-3">Log In or Register to Join the Conversation!</h3 class="col-sm-7 col-sm-offset-3">
+    </section>
     
 {% block body %} {% endblock %}
 

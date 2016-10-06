@@ -1,11 +1,12 @@
 $(document).ready(function(){
+
     function update() {
         if (!checkAuth()) {
-            $('#action-nav').show();
-            $('#user-nav').hide();
+            $('.action-nav').show();
+            $('.user-nav').hide();
         } else {
-            $('#user-nav').show();
-            $('#action-nav').hide();
+            $('.user-nav').show();
+            $('.action-nav').hide();
             $('#userbar').text(getUserName());
         }
     }
@@ -20,6 +21,7 @@ $(document).ready(function(){
                 $('#loginModal').modal('hide');
                 Cookies.set('token', data.token);
                 update();
+                location.reload();
             }else{
                 alert('Bad Login');
             }
@@ -51,41 +53,156 @@ $(document).ready(function(){
 
     $('.upvote').click(function(e){
         var value = $(this).attr('id');
-        $.post('/upvote', {
-            comment_id: value,
-            token: Cookies.get('token')
-        }).done(function(data){
-            if(data.status === 200){
-                $('.vote' + value).html(data.vote_count);
-                $('#thumbUp' + value).addClass('green');
-                $('#thumbDown' + value).removeClass('red');
-                update();
-            }else{
-                alert(data.message);
-            }
-        });
+        if(Cookies.get('token')){
+            $.post('/upvote', {
+                comment_id: value,
+                token: Cookies.get('token')
+            }).done(function(data){
+                if(data.status === 200){
+                    $('.vote' + value).html(data.vote_count);
+                    $('#thumbUp' + value).addClass('green');
+                    $('#thumbDown' + value).removeClass('red');
+                    update();
+                }else{
+                    alert(data.message);
+                }
+            });
+        }else{
+            alert('Please Log In or Register To Interact!');
+        }
         e.preventDefault();
     });
 
     $('.downvote').click(function(e){
+        if(Cookies.get('token')){
+            var value = $(this).attr('id');
+            $.post('/downvote', {
+                comment_id: value,
+                token: Cookies.get('token')
+            }).done(function(data){
+                if(data.status === 200){
+                    $('.vote' + value).html(data.vote_count);
+                    $('#thumbUp' + value).removeClass('green');
+                    $('#thumbDown' + value).addClass('red');
+                    $('#fave' + value).removeClass('faa-pulse animated');
+                    update();
+                }else{
+                    alert(data.message);
+                }
+            });
+        }else{
+            alert('Please Log In or Register To Interact!');
+        }
         e.preventDefault();
-        var value = $(this).attr('id');
-        $.post('/downvote', {
-            comment_id: value,
-            token: Cookies.get('token')
+    });
+
+    $('.favorite').click(function(e){
+        if(Cookies.get('token')){
+            var value = $(this).attr('id');
+            $.post('/favorite', {
+                comment_id: value,
+                token: Cookies.get('token')
+            }).done(function(data){
+                console.log(data);
+                if(data.status === 200){
+                    if(data.new_fave == 'FAVE'){
+                        $('.vote' + value).html(data.vote_count);
+                        $('#thumbUp' + value).addClass('green');
+                        $('#fave' + value).addClass('faa-pulse animated');
+                        $('#thumbDown' + value).removeClass('red');
+                    }else{
+                        $('#fave' + value).removeClass('faa-pulse animated');
+                    }
+                    update();
+                }else{
+                    alert(data.message);
+                }
+            });
+        }else{
+            alert('Please Log In or Register To Interact!');
+        }
+        e.preventDefault();
+    });
+
+    $('#portal').click(function(e){
+        update();
+    });
+
+    $('#edit-form').submit(function(e){
+        e.preventDefault();
+        if($('#password-edit').val() == ''){
+                var password = $('#oldPW-edit').val();
+            }else{
+                var password = $('#password-edit').val();
+            }
+        $.post('/edit', {
+            oldPW: $('#oldPW-edit').val(),
+            password: password,
+            userName: $('#userName-edit').val(),
+            email: $('#email-edit').val(),
+            fullName: $('#fullName-edit').val()
         }).done(function(data){
             if(data.status === 200){
-                $('.vote' + value).html(data.vote_count);
-                $('#thumbUp' + value).removeClass('green');
-                $('#thumbDown' + value).addClass('red');
+                $('#message').html(data.message).addClass('green');
                 update();
             }else{
-                alert(data.message);
+                $('#message').html(data.message).addClass('faa-pulse animated');
             }
         });
     });
 
+    $('#editModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var quote = button.data('quote'); // Extract info from data-* attributes
+        var ID = button.data('id');
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this);
+        modal.find('.modal-title').text('Edit Quote ID: ' + ID);
+        modal.find('.modal-body textarea').val(quote);
+    });
+
+    $('#userModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var user = button.data('user'); // Extract info from data-* attributes
+        var modal = $(this);
+        $.ajax({
+            'method': 'POST',
+            'async': false,
+            'global': false,
+            'url': '/user',
+            'data': {user: user},
+            'success': function(res){ 
+                console.log(res);
+                modal.find('.modal-title').text(user);
+                var modalHTML = '';
+                for (var i = 0; i < res.user_info.length; i++) {
+                    for (var j = 0; j < res.user_info[i].length; j++) {
+                        if (j === 0){
+                            modalHTML += '<tr><td>'+res.user_info[i][j]+'</td>';
+                        }else if(j === 2){
+                            modalHTML += '<td>'+res.user_info[i][j]+'</td></tr>'; 
+                        }else{
+                            modalHTML += '<td>'+res.user_info[i][j]+'</td>'; 
+                        }
+                    }
+                }
+                modal.find('.modal-body tbody').append(modalHTML);
+            }
+        });
+        
+    });
+
+    $('#logout').click(function(e){
+        location.reload();
+        e.preventDefault();
+        Cookies.remove('token');
+        $.get('/logout');
+        update();
+    })
+
     update();
+
 });
 
 function checkAuth() {
@@ -127,8 +244,6 @@ function getUserName() {
         return '';
     }
 }
-
-
 
 console.log(getUserName());
 console.log(checkAuth());

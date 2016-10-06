@@ -2,8 +2,7 @@
 ##### A quaint and curious volume of forgotten code
 
 ## Overview
-Allows the user to register and log in. Passwords are hashed using bcrypt. The home page
-displays the "caws" of the user's followers. The user can follow other users and view profiles.
+Allows the user to register and log in. Passwords are hashed using bcrypt.
 
 ## Technologies
 - HTML
