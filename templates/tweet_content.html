@@ -55,9 +55,9 @@
                 <td>{{row[1]}}</td>
                 <td><a class="user" id="user{{row[0]}}" href="/user" data-toggle="modal" data-target="#userModal" data-user="{{row[2]}}">{{row[2]}}</a></td>
                 <td class="vote{{row[0]}}">{{row[3]}}</td>
-                <td style="text-align: center"><a class="upvote" id="{{row[0]}}" href=""><i id="thumbUp{{row[0]}}" class="fa fa-thumbs-o-up fa-2x {% if not session['username'] %}{% elif row[4]== 'UP' %} green {% else %}{% endif %}" aria-hidden="true"></i></a></td>
-                <td style="text-align: center"><a class="downvote" id="{{row[0]}}" href=""><i id="thumbDown{{row[0]}}" class="fa fa-thumbs-o-down fa-2x {% if not session['username'] %}{% elif row[4]== 'DOWN' %} red {% else %}{% endif %}" aria-hidden="true"></i></a></td>
-                <td style="text-align: center"><a class="favorite" id="{{row[0]}}" href=""><i id="fave{{row[0]}}" class="fa fa-heartbeat fa-2x {% if not session['username'] %}{% elif row[5]== 'FAVE' %} faa-pulse animated {% else %}{% endif %}" aria-hidden="true"></i></a></td>
+                <td style="text-align: center"><a class="vote" vote="UP" id="{{row[0]}}" href=""><i id="thumbUp{{row[0]}}" class="fa fa-thumbs-o-up fa-2x {% if not session['username'] %}{% elif row[4]== 'UP' %} green {% else %}{% endif %}" aria-hidden="true"></i></a></td>
+                <td style="text-align: center"><a class="vote" vote="DOWN" id="{{row[0]}}" href=""><i id="thumbDown{{row[0]}}" class="fa fa-thumbs-o-down fa-2x {% if not session['username'] %}{% elif row[4]== 'DOWN' %} red {% else %}{% endif %}" aria-hidden="true"></i></a></td>
+                <td style="text-align: center"><a class="vote" vote="FAVE" id="{{row[0]}}" href=""><i id="fave{{row[0]}}" class="fa fa-heartbeat fa-2x {% if not session['username'] %}{% elif row[5]== 'FAVE' %} faa-pulse animated {% else %}{% endif %}" aria-hidden="true"></i></a></td>
             </tr>
         {% endfor %}
     </table>

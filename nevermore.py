@@ -91,7 +91,6 @@ def get_user():
 @app.route('/logout')
 def logout():
     session.clear()
-    print session
     return redirect('/')
 
 @app.route('/post_submit', methods=['POST'])
@@ -118,19 +117,16 @@ def user():
     req_user = request.form['user']
     cursor.execute("SELECT poetry3.quote, COUNT(CASE WHEN fave='FAVE' then `fave` END) AS Fave_Count, COUNT(CASE WHEN vote='UP' then `vote` end ) AS UP FROM who_voted INNER JOIN poetry3 ON who_voted.comment_id = poetry3.id WHERE poetry3.user_name = %s GROUP BY poetry3.quote", req_user)
     user_info = cursor.fetchall()
-    print user_info
     return jsonify(user_info=user_info)
-
-@app.route('/upvote', methods=['GET', 'POST'])
-def upvote():
+@app.route('/vote/<vote_type>', methods=['GET', 'POST'])
+def vote(vote_type):
     user_token = request.form['token']
     comment_id = request.form['comment_id']
     cursor.execute("SELECT user_name FROM user WHERE token = '%s'" % user_token)
     result = cursor.fetchone()
     user_name = result[0]
-    cursor.execute("SELECT user_name, vote, comment_id FROM who_voted WHERE user_name = %s AND comment_id = %s", (user_name, comment_id))
+    cursor.execute("SELECT vote, fave FROM who_voted WHERE user_name = %s AND comment_id = %s", (user_name, comment_id))
     who_voted = cursor.fetchall()
-    print who_voted
     cursor.execute('SELECT vote_count FROM poetry3 WHERE id = "%s"' % comment_id)
     vote = cursor.fetchone()
     if vote is None:
@@ -138,105 +134,61 @@ def upvote():
     else:
         vote_count = vote[0]
 
-    if who_voted:
-        if str(who_voted[0][1]) == 'UP':
-            return jsonify(message="You Already Voted")
+    if vote_type is 'FAVE':
+        if who_voted:
+            if str(fave[0][1]) == 'FAVE':
+                cursor.execute("UPDATE who_voted SET fave = %s WHERE comment_id = %s AND user_name = %s", ('NULL', comment_id, user_name))
+                new_fave = 'NULL'
+                conn.commit()
+            else:
+                cursor.execute("UPDATE who_voted SET fave = %s, vote = %s WHERE comment_id = %s AND user_name = %s", ('FAVE', 'UP', comment_id, user_name))
+                conn.commit()
+                new_fave = 'FAVE'
+                if str(fave[0][0]) == 'DOWN':
+                    vote_count += 1
+                    cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
+                    conn.commit()
         else:
-            vote_count += 1
-            cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
-            conn.commit()
-            cursor.execute("UPDATE who_voted SET VOTE = %s WHERE comment_id = %s AND user_name = %s", ('UP', comment_id, user_name))
-            conn.commit()
-            return jsonify(status=200, vote_count=vote_count)
-
-    else:
-        vote_count += 1
-        cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
-        conn.commit()
-        cursor.execute("INSERT INTO who_voted VALUES (DEFAULT, %s, %s, %s)", (user_name, comment_id, 'UP'))
-        conn.commit()
-        return jsonify(status=200, vote_count=vote_count)
-
-
-
-@app.route('/downvote', methods=['GET', 'POST'])
-def downvote():
-    user_token = request.form['token']
-    comment_id = request.form['comment_id']
-    cursor.execute("SELECT user_name FROM user WHERE token = '%s'" % user_token)
-    result = cursor.fetchone()
-    user_name = result[0]
-    cursor.execute("SELECT user_name, vote, comment_id FROM who_voted WHERE user_name = %s AND comment_id = %s", (user_name, comment_id))
-    who_voted = cursor.fetchall()
-    print who_voted
-    cursor.execute('SELECT vote_count FROM poetry3 WHERE id = "%s"' % comment_id)
-    vote = cursor.fetchone()
-    if vote is None:
-        vote_count = 0
-    else:
-        vote_count = vote[0]
-
-    if who_voted:
-        if str(who_voted[0][1]) == 'DOWN':
-            return jsonify(message="You Already Voted")
-        else:
-            vote_count -= 1
-            cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
-            conn.commit()
-            cursor.execute("UPDATE who_voted SET VOTE = %s, fave = %s WHERE comment_id = %s AND user_name = %s", ('DOWN', 'NULL', comment_id, user_name))
-            conn.commit()
-            return jsonify(status=200, vote_count=vote_count)
-
-    else:
-        vote_count -= 1
-        cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
-        conn.commit()
-        cursor.execute("INSERT INTO who_voted VALUES (DEFAULT, %s, %s, %s)", (user_name, comment_id, 'DOWN'))
-        conn.commit()
-        return jsonify(status=200, vote_count=vote_count)
-
-
-@app.route('/favorite', methods=['GET', 'POST'])
-def favorite():
-    user_token = request.form['token']
-    comment_id = request.form['comment_id']
-    cursor.execute("SELECT user_name FROM user WHERE token = '%s'" % user_token)
-    result = cursor.fetchone()
-    user_name = result[0]
-
-    cursor.execute("SELECT fave, vote FROM who_voted WHERE user_name = %s AND comment_id = %s", (user_name, comment_id))
-    fave = cursor.fetchall()
-
-    cursor.execute('SELECT vote_count FROM poetry3 WHERE id = "%s"' % comment_id)
-    vote = cursor.fetchone()
-    vote_count = vote[0]
-
-    if fave:
-        if str(fave[0][0]) == 'FAVE':
-            cursor.execute("UPDATE who_voted SET fave = %s WHERE comment_id = %s AND user_name = %s", ('NULL', comment_id, user_name))
-            new_fave = 'NULL'
-            conn.commit()
-        else:
-            cursor.execute("UPDATE who_voted SET fave = %s, vote = %s WHERE comment_id = %s AND user_name = %s", ('FAVE', 'UP', comment_id, user_name))
-            conn.commit()
             new_fave = 'FAVE'
-            if str(fave[0][1]) == 'DOWN':
-                vote_count += 1
+            vote_count += 1
+            cursor.execute("INSERT INTO who_voted VALUES (DEFAULT, %s, %s, %s, %s)", (user_name, comment_id, 'UP', 'FAVE'))
+            conn.commit()
+            
+            cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
+            conn.commit()
+        return jsonify(status=200, new_vote=new_fave, vote_count=vote_count)
+    else:    
+        if who_voted:
+            if str(who_voted[0][0]) == vote_type:
+                return jsonify(message="You Already Voted")
+            else:
+                if vote_type == 'UP':
+                    vote_count += 1
+                    cursor.execute("UPDATE who_voted SET VOTE = %s WHERE comment_id = %s AND user_name = %s", (vote_type, comment_id, user_name))
+                elif vote_type == 'DOWN':
+                    vote_count -= 1
+                    cursor.execute("UPDATE who_voted SET VOTE = %s, fave = %s WHERE comment_id = %s AND user_name = %s", (vote_type, 'NULL', comment_id, user_name))
+                conn.commit()
                 cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
                 conn.commit()
-    else:
-        new_fave = 'FAVE'
-        vote_count += 1
-        cursor.execute("INSERT INTO who_voted VALUES (DEFAULT, %s, %s, %s, %s)", (user_name, comment_id, 'UP', 'FAVE'))
-        conn.commit()
-        
-        cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
-        conn.commit()
-    return jsonify(status=200, new_fave=new_fave, vote_count=vote_count)
+                return jsonify(status=200, new_vote=vote_type, vote_count=vote_count)
+        else:
+            if vote_type == 'UP':
+                vote_count += 1
+            elif vote_type == 'DOWN':
+                vote_count -= 1
+            cursor.execute("INSERT INTO who_voted VALUES (DEFAULT, %s, %s, %s, %s)", (user_name, comment_id, vote_type, 'NULL'))
+            conn.commit()
+            cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
+            conn.commit()
+            return jsonify(status=200, new_vote=vote_type, vote_count=vote_count)
 
 @app.route('/portal')
 def portal():
-    key = session['username']
+    if session:
+        key = session['username']
+    else:
+        return redirect('/')
 
     query = "SELECT JK.ID, JK.QUOTE, SUM(JK.UP) AS UP, SUM(JK.DOWN) AS DOWN, JK.Fave_Count FROM (SELECT poetry3.quote as QUOTE, poetry3.id as ID, poetry3.user_name as NAME, COUNT(CASE WHEN vote='DOWN' then `vote` end) AS DOWN, COUNT(CASE WHEN vote='UP' then `vote` end ) AS UP, COUNT(CASE WHEN fave='FAVE' then `fave` END) AS Fave_Count FROM who_voted INNER JOIN poetry3 ON who_voted.comment_id = poetry3.id GROUP BY QUOTE, NAME, ID) AS JK WHERE JK.NAME = %s GROUP BY JK.QUOTE, JK.NAME, JK.ID ORDER BY UP DESC"
     cursor.execute(query, key)
@@ -244,7 +196,6 @@ def portal():
 
     cursor.execute("SELECT COUNT(CASE WHEN fave='FAVE' then `fave` END) AS Fave_Count, COUNT(CASE WHEN vote='DOWN' then `vote` end) AS DOWN, COUNT(CASE WHEN vote='UP' then `vote` end ) AS UP FROM who_voted INNER JOIN poetry3 ON who_voted.comment_id = poetry3.id WHERE poetry3.user_name = %s GROUP BY poetry3.user_name", key)
     fave_total = cursor.fetchone()
-    print fave_total
 
     cursor.execute("SELECT * FROM user WHERE user_name = %s", key)
     user_info = cursor.fetchall()
@@ -260,20 +211,22 @@ def edit():
     if result is None:
         return jsonify(status=401, message='No Match for User Name Found.  Please Log In Again.')
     elif bcrypt.checkpw(oldPW, result[3].encode('utf-8')):
-        print session['username']
-        print request.form['userName']
         if session['username'] != request.form['userName']:
             check_username = "SELECT * FROM user WHERE user_name = %s"
             cursor.execute(check_username, request.form['userName'])
             result2 = cursor.fetchone()
             if result2 is None:
-                password = request.form['password'].encode('utf-8')
+                if request.form['password']:
+                    password = request.form['password'].encode('utf-8')
+                else:
+                    password = request.form['oldPW'].encode('utf-8')   
+
                 real_name = request.form['fullName']
                 hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
                 user_name = request.form['userName']
                 email = request.form['email']
                 session['username'] = user_name
-                cursor.execute("UPDATE user SET email = %s, user_name = %s, password = %s, full_name = %s", (email, user_name, hashed_password, real_name))
+                cursor.execute("UPDATE user SET email = %s, user_name = %s, password = %s, full_name = %s WHERE user_name = %s", (email, user_name, hashed_password, real_name, session['username']))
                 conn.commit()
                 return jsonify(status=200, message='Successfully Updated!!')
             else:
@@ -283,12 +236,12 @@ def edit():
             real_name = request.form['fullName']
             hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
             email = request.form['email']
-            cursor.execute("UPDATE user SET email = %s, password = %s, full_name = %s", (email, hashed_password, real_name))
+            cursor.execute("UPDATE user SET email = %s, password = %s, full_name = %s WHERE user_name = %s", (email, hashed_password, real_name, session['username']))
             conn.commit()
             return jsonify(status=200, message='Successfully Updated!!')
     else:
-        return jsonify(status=401, message='Current Password Invalid.  Please Try Again.')
-    
+        return jsonify(status=401, message='Current Password Invalid.  Please Try Again.')    
+
 @app.route('/delete/<id>')
 def delete(id):
     cursor.execute("DELETE FROM poetry3 WHERE id = %s", id)

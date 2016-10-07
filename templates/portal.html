@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block body %} 
+{% if session %}
 <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-sm" role="document">
@@ -9,7 +10,7 @@
                     <h4 class="modal-title" id="myModalLabel"></h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-vertical" method="post" id="edit-form">
+                    <form class="form-vertical" method="post" id="edit-modal">
                             <label for="quote" class="control-label">Quote</label>
                         <div class="form-group">
                             <textarea name="quote_content" id="quote-content" rows="8" cols="34" data-minlength="20" data-error="Your Quote is Simply...Terribly Short!" required></textarea>
@@ -26,7 +27,7 @@
             </div>
         </div>
     </div> <!-- End Modal -->
-    <form class="form-vertical col-sm-6 col-sm-offset-3" data-toggle="validator" role="form" method="post" id="edit-form">
+    <form class="form-vertical col-sm-6 col-sm-offset-3" data-toggle="validator" method="post" role="form" id="edit-form">
         <h4>Edit Info</h4>
         <h6 id='message'></h6>
         <input id="hidID" name="hidID" type="hidden">
@@ -105,5 +106,5 @@
             </tr>
         {% endfor %}
     </table>
-
+{% endif %}
 {% endblock %}

@@ -51,66 +51,28 @@ $(document).ready(function(){
        $('#hidID').val(Cookies.get('token'));
     });
 
-    $('.upvote').click(function(e){
-        var value = $(this).attr('id');
-        if(Cookies.get('token')){
-            $.post('/upvote', {
-                comment_id: value,
-                token: Cookies.get('token')
-            }).done(function(data){
-                if(data.status === 200){
-                    $('.vote' + value).html(data.vote_count);
-                    $('#thumbUp' + value).addClass('green');
-                    $('#thumbDown' + value).removeClass('red');
-                    update();
-                }else{
-                    alert(data.message);
-                }
-            });
-        }else{
-            alert('Please Log In or Register To Interact!');
-        }
-        e.preventDefault();
-    });
-
-    $('.downvote').click(function(e){
+    $('.vote').click(function(e){
         if(Cookies.get('token')){
             var value = $(this).attr('id');
-            $.post('/downvote', {
+            var vote = $(this).attr('vote');
+            $.post('/vote/' + vote, {
                 comment_id: value,
                 token: Cookies.get('token')
             }).done(function(data){
                 if(data.status === 200){
-                    $('.vote' + value).html(data.vote_count);
-                    $('#thumbUp' + value).removeClass('green');
-                    $('#thumbDown' + value).addClass('red');
-                    $('#fave' + value).removeClass('faa-pulse animated');
-                    update();
-                }else{
-                    alert(data.message);
-                }
-            });
-        }else{
-            alert('Please Log In or Register To Interact!');
-        }
-        e.preventDefault();
-    });
-
-    $('.favorite').click(function(e){
-        if(Cookies.get('token')){
-            var value = $(this).attr('id');
-            $.post('/favorite', {
-                comment_id: value,
-                token: Cookies.get('token')
-            }).done(function(data){
-                console.log(data);
-                if(data.status === 200){
-                    if(data.new_fave == 'FAVE'){
+                    if(data.new_vote == 'UP' || data.new_vote == 'FAVE'){
                         $('.vote' + value).html(data.vote_count);
                         $('#thumbUp' + value).addClass('green');
-                        $('#fave' + value).addClass('faa-pulse animated');
                         $('#thumbDown' + value).removeClass('red');
-                    }else{
+                        if(data.new_vote == 'FAVE'){
+                            $('#fave' + value).addClass('faa-pulse animated');
+                        }
+                    }else if(data.new_vote == 'DOWN' || data.new_vote == 'NULL'){
+                        if(data.new_vote == 'DOWN'){
+                            $('.vote' + value).html(data.vote_count);
+                            $('#thumbUp' + value).removeClass('green');
+                            $('#thumbDown' + value).addClass('red');
+                        }
                         $('#fave' + value).removeClass('faa-pulse animated');
                     }
                     update();
@@ -136,20 +98,22 @@ $(document).ready(function(){
                 var password = $('#password-edit').val();
             }
         $.post('/edit', {
-            oldPW: $('#oldPW-edit').val(),
-            password: password,
-            userName: $('#userName-edit').val(),
-            email: $('#email-edit').val(),
-            fullName: $('#fullName-edit').val()
+                oldPW: $('#oldPW-edit').val(),
+                password: password,
+                userName: $('#userName-edit').val(),
+                email: $('#email-edit').val(),
+                fullName: $('#fullName-edit').val()
         }).done(function(data){
-            if(data.status === 200){
+            if (data.status === 200){
                 $('#message').html(data.message).addClass('green');
                 update();
             }else{
                 $('#message').html(data.message).addClass('faa-pulse animated');
-            }
+            } 
         });
     });
+
+
 
     $('#editModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
@@ -163,41 +127,45 @@ $(document).ready(function(){
     });
 
     $('#userModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var user = button.data('user'); // Extract info from data-* attributes
-        var modal = $(this);
-        $.ajax({
-            'method': 'POST',
-            'async': false,
-            'global': false,
-            'url': '/user',
-            'data': {user: user},
-            'success': function(res){ 
-                console.log(res);
-                modal.find('.modal-title').text(user);
-                var modalHTML = '';
-                for (var i = 0; i < res.user_info.length; i++) {
-                    for (var j = 0; j < res.user_info[i].length; j++) {
-                        if (j === 0){
-                            modalHTML += '<tr><td>'+res.user_info[i][j]+'</td>';
-                        }else if(j === 2){
-                            modalHTML += '<td>'+res.user_info[i][j]+'</td></tr>'; 
-                        }else{
-                            modalHTML += '<td>'+res.user_info[i][j]+'</td>'; 
+        if(Cookies.get('token')){
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var user = button.data('user'); // Extract info from data-* attributes
+            var modal = $(this);
+            $.ajax({
+                'method': 'POST',
+                'async': false,
+                'global': false,
+                'url': '/user',
+                'data': {user: user},
+                'success': function(res){ 
+                    console.log(res);
+                    modal.find('.modal-title').text(user);
+                    var modalHTML = '';
+                    for (var i = 0; i < res.user_info.length; i++) {
+                        for (var j = 0; j < res.user_info[i].length; j++) {
+                            if (j === 0){
+                                modalHTML += '<tr><td>'+res.user_info[i][j]+'</td>';
+                            }else if(j === 2){
+                                modalHTML += '<td>'+res.user_info[i][j]+'</td></tr>'; 
+                            }else{
+                                modalHTML += '<td>'+res.user_info[i][j]+'</td>'; 
+                            }
                         }
                     }
+                    modal.find('.modal-body tbody').empty();
+                    modal.find('.modal-body tbody').append(modalHTML);
                 }
-                modal.find('.modal-body tbody').append(modalHTML);
-            }
-        });
-        
+            });
+        }else{
+            event.preventDefault();
+            alert('Please Log In or Register To Interact!');
+        }    
     });
 
     $('#logout').click(function(e){
         location.reload();
-        e.preventDefault();
+        $.post('/logout');
         Cookies.remove('token');
-        $.get('/logout');
         update();
     })
 
