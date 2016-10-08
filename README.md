@@ -1,10 +1,11 @@
 # Nevermore Twitter "Clone"
 
-## Live Demo
-[I'm an inline-style link](www.dannyarango.com/nevermore)
+## [Live Demo](www.dannyarango.com/nevermore)
 
 ##Screen Shots
-![alt text](https://github.com/nevermore/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+![alt text](../master/static/images/ss1.png "Screen Shot 1")
+![alt text](../master/static/images/ss2.png "Screen Shot 2")
+![alt text](../master/static/images/ss3.png "Screen Shot 3")
 
 
 ## Overview
@@ -35,7 +36,7 @@ In this query, I am retrieving each quote ID, the actual quote content itself, h
 
 ## For those interested in delving deeper:
 
-
+For those interested, I refactored three Python/jQuery calls and was able to put them all into one function.  At the expense of saving space on the readme, I am simply including the links to the original [jQuery](../master/static/js/doNotUse.js) and [Python](../master/static/js/doNotUse.py) code and then the refactored [jQuery](../master/static/js/refactored.js) and [Python](../master/static/js/refactored.py) code.
 
 
 
