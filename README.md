@@ -60,3 +60,7 @@ For those interested, I refactored three Python/jQuery calls and was able to put
 
 `pip install bcrypt`
 
+cd into the directory containing the `nevermore.py` file and run:
+
+`python nevermore.py`
+
