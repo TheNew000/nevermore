@@ -14,7 +14,7 @@ def vote(vote_type):
     else:
         vote_count = vote[0]
     print vote_type
-    if vote_type == 'FAVE' or vote_type == 'NULL':
+    if vote_type == 'FAVE':
         print 'HERE'
         if who_voted:
             if str(who_voted[0][1]) == 'FAVE':

@@ -1,6 +1,6 @@
 # Nevermore Twitter "Clone"
 
-## [Live Demo](www.dannyarango.com/nevermore)
+## [Live Demo](http://www.dannyarango.com/nevermore)
 
 ##Screen Shots
 ![alt text](../master/static/images/ss1.png "Screen Shot 1")
