@@ -3,6 +3,10 @@
 ## Live Demo
 [I'm an inline-style link](www.dannyarango.com/nevermore)
 
+##Screen Shots
+![alt text](https://github.com/nevermore/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+
+
 ## Overview
 Users can register profiles, view other user's profiles as well as post edit and delete the posts that they created.   Users may also interact with the posts by upvoting, downvoting, or favoriting the different posts.  There is a User Portal where Users can update their information as well as see a few stats. (Upvotes, Downvotes, "Faves")
 
@@ -28,6 +32,8 @@ ORDER BY UP DESC
 ```
 
 In this query, I am retrieving each quote ID, the actual quote content itself, how many upvotes and downvotes each comment has received, and finally, how many times it's been given a "favorite."  But first, I need to create the subquery on this line: `...JK.Fave_Count FROM (SELECT poetry3.quote as QUOTE...` in which I count the various cases for each quote based on the user's name.  Even though I collect the user's name in the subquery I simply use it for grouping those posts that user made.  And then I ordered the list so the information would be displayed with the post that received the most upvotes first: `ORDER BY UP DESC`
+
+## For those interested in delving deeper:
 
 
 

@@ -23,6 +23,7 @@ def index():
         key = session['username']
     else:
         key = ''
+    # key = 'Hambone'
     cursor.execute("SELECT poetry3.*, who_voted.vote, who_voted.fave FROM poetry3 LEFT JOIN who_voted ON poetry3.id = who_voted.comment_id AND who_voted.user_name = %s ORDER BY vote_count DESC", key)
     result = cursor.fetchall()
     return render_template('/tweet_content.html', tweet_content = result)
@@ -118,6 +119,7 @@ def user():
     cursor.execute("SELECT poetry3.quote, COUNT(CASE WHEN fave='FAVE' then `fave` END) AS Fave_Count, COUNT(CASE WHEN vote='UP' then `vote` end ) AS UP FROM who_voted INNER JOIN poetry3 ON who_voted.comment_id = poetry3.id WHERE poetry3.user_name = %s GROUP BY poetry3.quote", req_user)
     user_info = cursor.fetchall()
     return jsonify(user_info=user_info)
+
 @app.route('/vote/<vote_type>', methods=['GET', 'POST'])
 def vote(vote_type):
     user_token = request.form['token']
@@ -133,10 +135,11 @@ def vote(vote_type):
         vote_count = 0
     else:
         vote_count = vote[0]
-
-    if vote_type is 'FAVE':
+    print vote_type
+    if vote_type == 'FAVE' or vote_type == 'NULL':
+        print 'HERE'
         if who_voted:
-            if str(fave[0][1]) == 'FAVE':
+            if str(who_voted[0][1]) == 'FAVE':
                 cursor.execute("UPDATE who_voted SET fave = %s WHERE comment_id = %s AND user_name = %s", ('NULL', comment_id, user_name))
                 new_fave = 'NULL'
                 conn.commit()
@@ -144,7 +147,7 @@ def vote(vote_type):
                 cursor.execute("UPDATE who_voted SET fave = %s, vote = %s WHERE comment_id = %s AND user_name = %s", ('FAVE', 'UP', comment_id, user_name))
                 conn.commit()
                 new_fave = 'FAVE'
-                if str(fave[0][0]) == 'DOWN':
+                if str(who_voted[0][0]) == 'DOWN':
                     vote_count += 1
                     cursor.execute("UPDATE poetry3 SET vote_count = %s WHERE id = %s", (vote_count, comment_id))
                     conn.commit()
