@@ -23,7 +23,6 @@ def index():
         key = session['username']
     else:
         key = ''
-    # key = 'Hambone'
     cursor.execute("SELECT poetry3.*, who_voted.vote, who_voted.fave FROM poetry3 LEFT JOIN who_voted ON poetry3.id = who_voted.comment_id AND who_voted.user_name = %s ORDER BY vote_count DESC", key)
     result = cursor.fetchall()
     return render_template('/tweet_content.html', tweet_content = result)
